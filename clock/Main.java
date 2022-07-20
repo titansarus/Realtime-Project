@@ -1,42 +1,83 @@
-import java.lang.*;
 import javax.realtime.RealtimeThread;
-import javax.realtime.RelativeTime;
-import javax.realtime.PeriodicParameters;
+import java.util.ArrayList;
 
-class PeriodicClockIncrementor extends RealtimeThread {
-    PeriodicClockIncrementor(PeriodicParameters pp) {
-        super(null, pp);
+class Clock {
+    private int time = 0;
+
+    public int getTime() {
+        return time;
+    }
+
+    public void increase() {
+        this.time++;
+    }
+}
+
+class PrinterThread extends RealtimeThread {
+    private Clock clock;
+    private int id;
+
+    public PrinterThread(Clock clock, int id) {
+        this.clock = clock;
+        this.id = id;
     }
 
     public void run() {
-        for (int i = 0; i < 30; i++) {
-            System.out.println("HELL");
-            waitForNextPeriod();
+        while (true) {
+            System.out.println(id + " : " + this.clock.getTime());
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+}
+
+class TimeStepThread extends RealtimeThread {
+    private Clock clock;
+
+    public TimeStepThread(Clock clock) {
+        this.clock = clock;
+    }
+
+    public void run() {
+        while (true) {
+            this.clock.increase();
+            try {
+                sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
 }
 
 public class Main {
-    public static void main(String[] args) {
 
-        int period = 500;
-
-        PeriodicParameters pp = new PeriodicParameters(
-            new RelativeTime(0, 0),    // Start
-            new RelativeTime(period, 0), // Period
-            new RelativeTime(period/2, 0),  // Cost
-            new RelativeTime(period, 0), // Deadline
-            null, // overrun handler
-            null // miss handler
-        );
-
-        PeriodicClockIncrementor rtt = new PeriodicClockIncrementor(pp);
-        rtt.start();
-        try {
-            rtt.join();
-        } catch (InterruptedException ie) {
-            // Ignore
+    public static void main(String[] args) throws InterruptedException {
+        Clock clock = new Clock();
+        TimeStepThread timeStepThread = new TimeStepThread(clock);
+        timeStepThread.setPriority(RealtimeThread.MAX_PRIORITY);
+        ArrayList<PrinterThread> printerThreads = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            PrinterThread pt = new PrinterThread(clock,i);
+            pt.setPriority(i+1);
+            printerThreads.add(pt);
         }
+
+        timeStepThread.start();
+
+
+        for (PrinterThread pt : printerThreads) {
+            pt.start();
+        }
+
+        for (PrinterThread pt : printerThreads) {
+            pt.join();
+        }
+        timeStepThread.join();
+
     }
 }
