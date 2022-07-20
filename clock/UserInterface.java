@@ -1,9 +1,20 @@
 import javax.swing.*;
 import javax.realtime.RealtimeThread;
 
+class ClockData {
+    public int hours;
+    public int minutes;
+    public int seconds;
+
+    ClockData(int totalSeconds) {
+        this.hours = totalSeconds / 3600;
+        this.minutes = (totalSeconds % 3600) / 60;
+        this.seconds = (totalSeconds % 3600) % 60;
+    }
+}
+
 interface IClock {
     int getID();
-
     int getTime();
 }
 
@@ -26,16 +37,8 @@ class UserInterface {
         t.start();
         t.join();
     }
-
-    private static void extracted() {
-        JFrame frame = new JFrame("Clocks");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(300, 300);
-        JButton button = new JButton("Press");
-        frame.getContentPane().add(button); // Adds Button to content pane of frame
-        frame.setVisible(true);
-    }
 }
+
 
 class TerminalUI extends RealtimeThread {
     private IClock clock;
@@ -46,16 +49,10 @@ class TerminalUI extends RealtimeThread {
 
     public void run() {
         while (true) {
-            int totalSeconds = this.clock.getTime();
-
-            int hours = totalSeconds / 3600;
-            int minutes = (totalSeconds % 3600) / 60;
-            int seconds = (totalSeconds % 3600) % 60;
-
-            String t = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-
-            int id = this.clock.getID();
-            System.out.println(id + " : " + t);
+            ClockData c = new ClockData(this.clock.getTime());
+            int id = this.clock.getID();     
+            String out = String.format("Clock %d: %02d:%02d:%02d", id, c.hours, c.minutes, c.seconds);
+            System.out.println(out);
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
@@ -74,29 +71,11 @@ class GUI extends RealtimeThread {
     public GUI(IClock clock) {
         this.clock = clock;
     }
+
     public void run() {
-        this.frame = new JFrame("Clocks");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setSize(300,300);
-        this.timeLabel = new JLabel();
-        this.timeLabel.setText("HE");
-        JPanel p = new JPanel();
-        p.add(this.timeLabel);
-        this.frame.add(p);
-        
-        this.frame.setVisible(true);
-        
+        this.initFrame();
         while (true) {
-            int totalSeconds = this.clock.getTime();
-
-            int hours = totalSeconds / 3600;
-            int minutes = (totalSeconds % 3600) / 60;
-            int seconds = (totalSeconds % 3600) % 60;
-
-            String t = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            int id = this.clock.getID();            
-            this.showTime(t);
-
+            this.showTime();
             try {
                 sleep(1000);
             } catch (InterruptedException e) {
@@ -105,7 +84,21 @@ class GUI extends RealtimeThread {
         }
     }
 
-    private void showTime(String t) {
-        this.timeLabel.setText(t);
+    private void initFrame(){
+        this.frame = new JFrame("Clocks");
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setSize(300,300);
+        this.timeLabel = new JLabel();
+        this.timeLabel.setText("HE");
+        JPanel p = new JPanel();
+        p.add(this.timeLabel);
+        this.frame.add(p);
+        this.frame.setVisible(true);
+    }
+
+    private void showTime() {
+        ClockData c = new ClockData(this.clock.getTime());
+        int id = this.clock.getID();     
+        this.timeLabel.setText(String.format("Clock %d: %02d:%02d:%02d", id, c.hours, c.minutes, c.seconds));
     }
 }

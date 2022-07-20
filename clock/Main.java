@@ -11,16 +11,17 @@ class Clock {
     public void increase() {
         this.time++;
     }
+
 }
 
 
-class PrinterThread extends RealtimeThread {
+class ClockThread extends RealtimeThread implements IClock{
     private final Clock clock;
     private final int id;
     private final int innerOffset;
     private int innerTime;
 
-    public PrinterThread(Clock clock, int id, int innerOffset) {
+    public ClockThread(Clock clock, int id, int innerOffset) {
         this.clock = clock;
         this.id = id;
         this.innerOffset = innerOffset;
@@ -29,9 +30,8 @@ class PrinterThread extends RealtimeThread {
     public void run() {
         while (true) {
             this.innerTime = this.clock.getTime() + this.innerOffset;
-            System.out.println(id + " : " + (this.innerTime));
             try {
-                sleep(1);
+                sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -40,6 +40,10 @@ class PrinterThread extends RealtimeThread {
 
     public int getTime() {
         return this.innerTime;
+    }
+
+    public int getID() {
+        return this.id;
     }
 
 }
@@ -55,7 +59,7 @@ class TimeStepThread extends RealtimeThread {
         while (true) {
             this.clock.increase();
             try {
-                sleep(1);
+                sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -69,23 +73,28 @@ public class Main {
     public static void main(String[] args) throws InterruptedException {
         Clock clock = new Clock();
         TimeStepThread timeStepThread = new TimeStepThread(clock);
+
         timeStepThread.setPriority(RealtimeThread.MAX_PRIORITY);
-        ArrayList<PrinterThread> printerThreads = new ArrayList<>();
+        
+        ArrayList<ClockThread> printerThreads = new ArrayList<>();
+
         for (int i = 0; i < 4; i++) {
-            PrinterThread pt = new PrinterThread(clock, i, 0);
+            ClockThread pt = new ClockThread(clock, i, 0);
+            GUI gui = new GUI(pt);
+            gui.start();
+
             pt.setPriority(i + 1);
             printerThreads.add(pt);
         }
-        printerThreads.get(3).setPriority(RealtimeThread.MAX_PRIORITY);
 
+        printerThreads.get(3).setPriority(RealtimeThread.MAX_PRIORITY);
         timeStepThread.start();
 
-
-        for (PrinterThread pt : printerThreads) {
+        for (ClockThread pt : printerThreads) {
             pt.start();
         }
 
-        for (PrinterThread pt : printerThreads) {
+        for (ClockThread pt : printerThreads) {
             pt.join();
         }
         timeStepThread.join();
