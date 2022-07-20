@@ -13,6 +13,7 @@ class Clock {
     }
 }
 
+
 class PrinterThread extends RealtimeThread {
     private final Clock clock;
     private final int id;
@@ -35,6 +36,10 @@ class PrinterThread extends RealtimeThread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public int getTime() {
+        return this.innerTime;
     }
 
 }
