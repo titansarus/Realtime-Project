@@ -78,10 +78,13 @@ public class Main {
         
         ArrayList<ClockThread> printerThreads = new ArrayList<>();
 
+        BaseFrame f = new BaseFrame();
+
         for (int i = 0; i < 4; i++) {
             ClockThread pt = new ClockThread(clock, i, 0);
-            GUI gui = new GUI(pt);
+            GUI gui = new GUI(pt, f);
             gui.start();
+            gui.setPriority(RealtimeThread.MIN_PRIORITY);
 
             pt.setPriority(i + 1);
             printerThreads.add(pt);

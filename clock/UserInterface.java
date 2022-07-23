@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.realtime.RealtimeThread;
+import java.awt.*;
 
 class ClockData {
     public int hours;
@@ -24,18 +25,44 @@ class DummyClock implements IClock {
     }
 
     public int getTime() {
-        return 1452452;
+        return 1340;
     }
 }
 
 class UserInterface {
+    
     public static void main(String args[]) throws InterruptedException {
-        // extracted();
         IClock c = new DummyClock();
+        BaseFrame f = new BaseFrame();
         // TerminalUI t = new TerminalUI(c);
-        GUI t = new GUI(c);
+        GUI t = new GUI(c, f);
+
         t.start();
         t.join();
+    }
+}
+
+class BaseFrame {
+    private JFrame frame;
+    private JPanel panel;
+
+    public BaseFrame() {
+        this.frame = new JFrame("Clocks");
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setSize(500, 500);
+
+        this.panel = new JPanel();
+        this.panel.setBackground(Color.BLACK);
+        this.frame.add(panel);
+        this.frame.setVisible(true);
+    }
+
+    public JFrame getFrame() {
+        return this.frame;
+    }
+
+    public void add(JComponent comp) {
+        this.panel.add(comp);
     }
 }
 
@@ -65,15 +92,16 @@ class TerminalUI extends RealtimeThread {
 
 class GUI extends RealtimeThread {
     private IClock clock;
-    private JFrame frame;
+    private BaseFrame frame;
     private JLabel timeLabel;
 
-    public GUI(IClock clock) {
+    public GUI(IClock clock, BaseFrame frame) {
         this.clock = clock;
+        this.frame = frame;
+        this.InitLabel();
     }
 
     public void run() {
-        this.initFrame();
         while (true) {
             this.showTime();
             try {
@@ -84,16 +112,18 @@ class GUI extends RealtimeThread {
         }
     }
 
-    private void initFrame(){
-        this.frame = new JFrame("Clocks");
-        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setSize(300,300);
-        this.timeLabel = new JLabel();
-        this.timeLabel.setText("HE");
+    private void InitLabel(){
+        this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00",  this.clock.getID()));
+        this.timeLabel.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 30));
+        this.timeLabel.setForeground(Color.RED);
+
         JPanel p = new JPanel();
+        p.setLayout(new GridBagLayout());
+        p.setBackground(Color.BLACK);
+        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        p.setPreferredSize(new Dimension(500, 100));
         p.add(this.timeLabel);
         this.frame.add(p);
-        this.frame.setVisible(true);
     }
 
     private void showTime() {
