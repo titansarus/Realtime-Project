@@ -16,7 +16,7 @@ public class ThreadBlock implements Comparable<ThreadBlock> {
 
     @Override
     public int compareTo(ThreadBlock o) {
-        return this.clockThread.getPriority() - o.clockThread.getPriority();
+        return -(this.clockThread.getPriority() - o.clockThread.getPriority());
     }
 
     public ClockThread getClockThread() {
