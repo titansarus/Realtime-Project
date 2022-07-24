@@ -18,6 +18,8 @@ interface IClock {
     int getID();
 
     int getTime();
+
+    void setPriorityClock(int priority);
 }
 
 class DummyClock implements IClock {
@@ -28,6 +30,10 @@ class DummyClock implements IClock {
     public int getTime() {
         return 1340;
     }
+
+    public void setPriorityClock(int priority) {
+    }
+    
 }
 
 class UserInterface {
@@ -118,6 +124,10 @@ class GUI extends UIThread {
         }
     }
 
+    private void setPriorityClock(int priority) {
+        this.clock.setPriorityClock(priority);
+    }
+
     private void InitPanel() {
         this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00", this.clock.getID()));
         this.timeLabel.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 30));
@@ -132,6 +142,16 @@ class GUI extends UIThread {
         this.textField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         this.textField.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
         this.textField.setMinimumSize(new java.awt.Dimension(100, 30));
+
+        this.button.addActionListener(l -> {
+            try {
+                int priority = Integer.parseInt(this.textField.getText());
+                this.setPriorityClock(priority);
+                System.out.println("set priority to " + priority);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input");
+            }
+        });
 
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
