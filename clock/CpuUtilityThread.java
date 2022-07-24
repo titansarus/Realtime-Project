@@ -35,7 +35,7 @@ public class CpuUtilityThread extends RealtimeThread {
     public void run() {
         while (true) {
             OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(OperatingSystemMXBean.class);
-            double cpu_load = osBean.getCpuLoad() * 100;
+            double cpu_load = osBean.getSystemCpuLoad() * 100;
             //System.out.println(cpu_load);
             for (Percentage p : Percentage.values()) {
                 if (cpu_load > p.lower_bound && cpu_load <= p.upper_bound) {
