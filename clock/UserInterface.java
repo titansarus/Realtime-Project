@@ -16,6 +16,7 @@ class ClockData {
 
 interface IClock {
     int getID();
+
     int getTime();
 }
 
@@ -30,7 +31,7 @@ class DummyClock implements IClock {
 }
 
 class UserInterface {
-    
+
     public static void main(String args[]) throws InterruptedException {
         IClock c = new DummyClock();
         BaseFrame f = new BaseFrame();
@@ -66,8 +67,11 @@ class BaseFrame {
     }
 }
 
+class UIThread extends RealtimeThread {
+}
 
-class TerminalUI extends RealtimeThread {
+
+class TerminalUI extends UIThread {
     private IClock clock;
 
     public TerminalUI(IClock clock) {
@@ -77,11 +81,11 @@ class TerminalUI extends RealtimeThread {
     public void run() {
         while (true) {
             ClockData c = new ClockData(this.clock.getTime());
-            int id = this.clock.getID();     
+            int id = this.clock.getID();
             String out = String.format("Clock %d: %02d:%02d:%02d", id, c.hours, c.minutes, c.seconds);
             System.out.println(out);
             try {
-                sleep(1000);
+                sleep(107);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -90,7 +94,7 @@ class TerminalUI extends RealtimeThread {
 
 }
 
-class GUI extends RealtimeThread {
+class GUI extends UIThread {
     private IClock clock;
     private BaseFrame frame;
     private JLabel timeLabel;
@@ -105,15 +109,15 @@ class GUI extends RealtimeThread {
         while (true) {
             this.showTime();
             try {
-                sleep(1000);
+                sleep(107);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private void InitLabel(){
-        this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00",  this.clock.getID()));
+    private void InitLabel() {
+        this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00", this.clock.getID()));
         this.timeLabel.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 30));
         this.timeLabel.setForeground(Color.RED);
 
@@ -128,7 +132,7 @@ class GUI extends RealtimeThread {
 
     private void showTime() {
         ClockData c = new ClockData(this.clock.getTime());
-        int id = this.clock.getID();     
+        int id = this.clock.getID();
         this.timeLabel.setText(String.format("Clock %d: %02d:%02d:%02d", id, c.hours, c.minutes, c.seconds));
     }
 }
