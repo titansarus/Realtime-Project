@@ -50,7 +50,7 @@ class BaseFrame {
     public BaseFrame() {
         this.frame = new JFrame("Clocks");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setSize(500, 500);
+        this.frame.setSize(1000, 500);
 
         this.panel = new JPanel();
         this.panel.setBackground(Color.BLACK);
@@ -98,11 +98,13 @@ class GUI extends UIThread {
     private IClock clock;
     private BaseFrame frame;
     private JLabel timeLabel;
+    private JButton button;
+    private JTextField textField;
 
     public GUI(IClock clock, BaseFrame frame) {
         this.clock = clock;
         this.frame = frame;
-        this.InitLabel();
+        this.InitPanel();
     }
 
     public void run() {
@@ -116,10 +118,14 @@ class GUI extends UIThread {
         }
     }
 
-    private void InitLabel() {
+    private void InitPanel() {
         this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00", this.clock.getID()));
         this.timeLabel.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 30));
         this.timeLabel.setForeground(Color.RED);
+
+        this.button = new JButton("Set!");
+        this.button.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
+        this.button.setForeground(Color.RED);
 
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
@@ -127,6 +133,8 @@ class GUI extends UIThread {
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         p.setPreferredSize(new Dimension(500, 100));
         p.add(this.timeLabel);
+        p.add(this.button);
+        p.add(this.textField);
         this.frame.add(p);
     }
 
