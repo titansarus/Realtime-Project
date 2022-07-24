@@ -16,7 +16,6 @@ class ClockData {
 
 interface IClock {
     int getID();
-
     int getTime();
 }
 
