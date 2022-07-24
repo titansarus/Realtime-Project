@@ -53,14 +53,16 @@ public class CpuUtilityThread extends RealtimeThread {
     public void handle(Percentage percentage) {
         Collections.sort(threadBlockList);
         for (int i = 0; i < min(threadBlockList.size(), percentage.unlock_threshold); i++) {
-            try {
+            try {            
                 threadBlockList.get(i).getLock().unlock();
+                threadBlockList.get(i).getUILock().unlock();
             } catch (IllegalMonitorStateException ignored) {
 
             }
         }
         for (int i = min(percentage.lock_threshold, threadBlockList.size()); i < threadBlockList.size(); i++) {
-            threadBlockList.get(i).getLock().lock();
+            threadBlockList.get(i).getUILock().lock();
+            threadBlockList.get(i).getLock().lock();   
         }
     }
 

@@ -1,4 +1,7 @@
 import javax.swing.*;
+
+import javolution.util.ReentrantLock;
+
 import javax.realtime.RealtimeThread;
 import java.awt.*;
 
@@ -17,7 +20,6 @@ class ClockData {
 interface IClock {
     int getID();
     int getTime();
-
     void setPriorityClock(int priority);
 }
 
@@ -73,22 +75,35 @@ class BaseFrame {
 }
 
 class UIThread extends RealtimeThread {
+    protected ReentrantLock lock;
+
+    public UIThread() {
+        this.lock = new ReentrantLock();
+    }
+
+    public void setLock(ReentrantLock lock) {
+        this.lock = lock;
+    }
 }
 
 
 class TerminalUI extends UIThread {
     private IClock clock;
-
+    
     public TerminalUI(IClock clock) {
         this.clock = clock;
     }
 
     public void run() {
         while (true) {
+            this.lock.lock();
+            
             ClockData c = new ClockData(this.clock.getTime());
             int id = this.clock.getID();
             String out = String.format("Clock %d: %02d:%02d:%02d", id, c.hours, c.minutes, c.seconds);
             System.out.println(out);
+
+            this.lock.unlock();
             try {
                 sleep(107);
             } catch (InterruptedException e) {
@@ -114,7 +129,9 @@ class GUI extends UIThread {
 
     public void run() {
         while (true) {
+            this.lock.lock();
             this.showTime();
+            this.lock.unlock();
             try {
                 sleep(107);
             } catch (InterruptedException e) {

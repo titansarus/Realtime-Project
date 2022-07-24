@@ -52,17 +52,19 @@ public class Main {
 
     private static void createClockThreadBlock(Clock clock, ArrayList<ClockThread> printerThreads, ArrayList<ThreadBlock> threadBlocks, int priority, int offset, int id, BaseFrame f) {
         ClockThread pt = new ClockThread(clock, id, offset);
+        pt.setPriority(priority);
+
         UIThread ui;
         if (Setting.getInstance().getUiType() == Setting.UiType.GUI) {
             ui = new GUI(pt, f);
         } else {
             ui = new TerminalUI(pt);
         }
-        ui.start();
-        ui.setPriority(RealtimeThread.MIN_PRIORITY);
 
         ThreadBlock tb = new ThreadBlock(pt, ui);
-        pt.setPriority(priority);
+        ui.start();
+        ui.setPriority(RealtimeThread.MIN_PRIORITY);
+        
         printerThreads.add(pt);
         threadBlocks.add(tb);
     }

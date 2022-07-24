@@ -6,12 +6,15 @@ public class ThreadBlock implements Comparable<ThreadBlock> {
     private final ClockThread clockThread;
     private final UIThread uiThread;
     private final ReentrantLock lock;
+    private final ReentrantLock UIlock;
 
     public ThreadBlock(ClockThread clockThread, UIThread uiThread) {
         this.clockThread = clockThread;
         this.uiThread = uiThread;
         this.lock = new ReentrantLock();
-        this.getClockThread().setLock(lock);
+        this.getClockThread().setLock(this.lock);
+        this.UIlock = new ReentrantLock();
+        this.uiThread.setLock(this.UIlock);
     }
 
     @Override
@@ -29,5 +32,8 @@ public class ThreadBlock implements Comparable<ThreadBlock> {
 
     public ReentrantLock getLock() {
         return lock;
+    }
+    public ReentrantLock getUILock() {
+        return UIlock;
     }
 }
