@@ -173,26 +173,30 @@ class GUI extends UIThread {
 
         this.statusLabel = new JLabel("             ");
         this.statusLabel.setForeground(Color.WHITE);
-        this.statusLabel.setFont(new Font("Roboto", Font.PLAIN, 20));
+        this.statusLabel.setFont(new Font("Roboto", Font.PLAIN, 15));
 
 
         this.button.addActionListener(l -> {
             try {
+                int oldPriority = this.getPriority();
                 int priority = Integer.parseInt(this.textField.getText());
-                boolean result = this.setPriorityClock(priority);
-                if (result)
+                if (oldPriority != priority)
                 {
-                    System.out.println("priority set to " + priority);
-                    this.statusLabel.setText("Priority changed");
-                    this.statusLabel.setForeground(Color.GREEN);
-                }
-                else
-                {
-                    System.out.println("Invalid input");
-                    this.statusLabel.setText("Invalid input");
-                    this.statusLabel.setForeground(Color.RED);
-                }
+                    boolean result = this.setPriorityClock(priority);
+                    if (result)
+                    {
+                        System.out.println("priority set to " + priority);
+                        this.statusLabel.setText("Priority updated");
+                        this.statusLabel.setForeground(Color.GREEN);
+                    }
+                    else
+                    {
+                        System.out.println("Invalid input");
+                        this.statusLabel.setText("Invalid input");
+                        this.statusLabel.setForeground(Color.RED);
+                    }
 
+            }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input");
             }
@@ -201,13 +205,19 @@ class GUI extends UIThread {
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
         p.setBackground(Color.BLACK);
-        p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        p.setPreferredSize(new Dimension(500, 100));
-        p.add(this.timeLabel);
         p.add(this.button);
         p.add(this.textField);
         p.add(this.statusLabel);
-        this.frame.add(p);
+
+        JPanel all = new JPanel();
+        all.setLayout(new GridBagLayout());
+        all.setBackground(Color.BLACK);
+        // all.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        all.setPreferredSize(new Dimension(500, 100));
+        all.add(this.timeLabel);
+        all.add(p);
+
+        this.frame.add(all);
     }
 
     private void showTime() {
