@@ -4,12 +4,14 @@
 \reserveinserts{28}
 \usepackage{titlesec}
 \usepackage{graphicx}
-
+\usepackage{listings}
 \input{styles/common.tex}
 \input{styles/custom.tex}
 \usepackage{etoolbox}
 \usepackage{fancyhdr}
 \usepackage{dirtree}
+
+
 
 \titlespacing\section{4pt}{3pt plus 1pt minus 1pt}{1pt plus 2pt minus 2pt}
 \titlespacing\subsection{4pt}{1pt plus 1pt minus 1pt}{0.5pt plus 1pt minus 1pt}
@@ -190,6 +192,35 @@
 	ترد کلاس CpuUtilityThread هر ۰.۱ میلی‌ثانیه میزان لود CPU را مانیتور می‌کند. در صورتی که لود از مقدار ۷۰ درصد بالاتر رفته باشد، به ماکسیمم دو ترد ساعت اجازه‌ی کار می‌دهد و قفل مربوط به ساعت‌های دیگر را می‌گیرد تا آن‌ها منتظر قفل بخوابند و نتوانند آپدیت شوند. هم چنین اگر لود از مقدار ۹۰ درصد بالاتر برود، فقط یک ترد ساعت اجازه‌ی کار خواهد داشت.
 	
 	به همین صورت در صورتی که لود از مقدار ۹۰ درصد پایین بیاید امکان اجازه کار به ماکسیمم دو ترد و اگر از ۷۰ درصد پایین‌تر بیاید اجازه‌ی کار به همه‌ی تردها داده می‌شود.
+	
+		\section{اجرای برنامه}
+هنگام اجرای برنامه می‌توان نوع رابط کاربری، تعداد ساعت‌ها، مقادیر اولیه‌ی اولویت‌ها و هم چنین مقادیر اولیه‌ی ساعت‌ها را مشخص کرد. فرمت ورودی به صورت زیر است:		
+\begin{latin}
+Main [GuiType] [NumberOfClocks] [InitialPriorityArray] [InitialTimeInSeconds]
+
+\end{latin}
+	تایپ رابط کاربری می‌تواند صفر یا یک باشد. صفر به معنای رابط گرافیکی و یک به معنای رابط ترمینال است. به طور مثال فرض کنید تنظیمات زیر مد نظر باشد:
+		
+		\begin{latin}
+			\begin{itemize}
+\item	
+				GUI TYPE = 0
+\item
+			Number of Clocks = 4
+\item
+			Initial Priority Array = [3 1 1 2]
+\item
+			Initial time in seconds = [10 100 500 1000]
+				\end{itemize}
+	\end{latin}		
+
+	برای این تنظیمات	باید از کامند زیر استفاده کنیم:
+			\begin{latin}
+\begin{lstlisting}[language=Bash]
+Main 0  4 3 1 1 2 10 100 500 1000
+\end{lstlisting}
+		
+	\end{latin}
 	
 	% -------------------- The End! --------------------
 \end{document}
