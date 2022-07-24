@@ -67,6 +67,8 @@ class BaseFrame {
 
         this.panel = new JPanel();
         this.panel.setBackground(Color.BLACK);
+        this.panel.setLayout(new GridLayout(0,1));
+
         this.frame.add(panel);
         this.frame.setVisible(true);
     }
@@ -171,14 +173,14 @@ class GUI extends UIThread {
         this.textField.setForeground(Color.white);
         this.textField.setMargin(new Insets(50, 50, 50, 50));
 
-        this.statusLabel = new JLabel("             ");
-        this.statusLabel.setForeground(Color.WHITE);
+        this.statusLabel = new JLabel("Priority updated");
+        this.statusLabel.setForeground(Color.BLACK);
         this.statusLabel.setFont(new Font("Roboto", Font.PLAIN, 15));
 
 
         this.button.addActionListener(l -> {
             try {
-                int oldPriority = this.getPriority();
+                int oldPriority = this.clock.getPriority();
                 int priority = Integer.parseInt(this.textField.getText());
                 if (oldPriority != priority)
                 {
@@ -196,14 +198,18 @@ class GUI extends UIThread {
                         this.statusLabel.setForeground(Color.RED);
                     }
 
-            }
+                }
+                else {
+                    this.statusLabel.setText("Priority updated");
+                    this.statusLabel.setForeground(Color.BLACK);
+                }
             } catch (NumberFormatException e) {
                 System.out.println("Invalid input");
             }
         });
 
         JPanel p = new JPanel();
-        p.setLayout(new GridBagLayout());
+        p.setLayout(new FlowLayout());
         p.setBackground(Color.BLACK);
         p.add(this.button);
         p.add(this.textField);
