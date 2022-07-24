@@ -26,7 +26,7 @@ public class Main {
         }
 
         for (int i = 0; i < Setting.getInstance().getNumberOfThreads(); i++) {
-            createClockThread(clock, printerThreads, threadBlocks,
+            createClockThreadBlock(clock, printerThreads, threadBlocks,
                     Setting.getInstance().getPriorities().get(i), Setting.getInstance().getOffsets().get(i), i,
                     f
             );
@@ -50,7 +50,7 @@ public class Main {
 
     }
 
-    private static void createClockThread(Clock clock, ArrayList<ClockThread> printerThreads, ArrayList<ThreadBlock> threadBlocks, int priority, int offset, int id, BaseFrame f) {
+    private static void createClockThreadBlock(Clock clock, ArrayList<ClockThread> printerThreads, ArrayList<ThreadBlock> threadBlocks, int priority, int offset, int id, BaseFrame f) {
         ClockThread pt = new ClockThread(clock, id, offset);
         UIThread ui;
         if (Setting.getInstance().getUiType() == Setting.UiType.GUI) {
