@@ -51,7 +51,9 @@ public class ClockThread extends RealtimeThread implements IClock {
         return this.id;
     }
 
-
+    public void setPriorityClock(int priority) {
+        this.setPriority(priority);
+    }
     public void setLock(ReentrantLock lock) {
         this.lock = lock;
     }

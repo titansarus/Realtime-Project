@@ -17,6 +17,8 @@ class ClockData {
 interface IClock {
     int getID();
     int getTime();
+
+    void setPriorityClock(int priority);
 }
 
 class DummyClock implements IClock {
@@ -27,6 +29,10 @@ class DummyClock implements IClock {
     public int getTime() {
         return 1340;
     }
+
+    public void setPriorityClock(int priority) {
+    }
+    
 }
 
 class UserInterface {
@@ -49,7 +55,7 @@ class BaseFrame {
     public BaseFrame() {
         this.frame = new JFrame("Clocks");
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.setSize(500, 500);
+        this.frame.setSize(1000, 500);
 
         this.panel = new JPanel();
         this.panel.setBackground(Color.BLACK);
@@ -97,11 +103,13 @@ class GUI extends UIThread {
     private IClock clock;
     private BaseFrame frame;
     private JLabel timeLabel;
+    private JButton button;
+    private JTextField textField;
 
     public GUI(IClock clock, BaseFrame frame) {
         this.clock = clock;
         this.frame = frame;
-        this.InitLabel();
+        this.InitPanel();
     }
 
     public void run() {
@@ -115,10 +123,32 @@ class GUI extends UIThread {
         }
     }
 
-    private void InitLabel() {
+    private void setPriorityClock(int priority) {
+        this.clock.setPriorityClock(priority);
+    }
+
+    private void InitPanel() {
         this.timeLabel = new JLabel(String.format("Clock %d: 00:00:00", this.clock.getID()));
         this.timeLabel.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 30));
         this.timeLabel.setForeground(Color.RED);
+
+        this.button = new JButton("Set!");
+        this.button.setForeground(Color.RED);
+        this.button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        this.textField = new JTextField("input priority");
+        this.textField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.textField.setMinimumSize(new java.awt.Dimension(100, 30));
+
+        this.button.addActionListener(l -> {
+            try {
+                int priority = Integer.parseInt(this.textField.getText());
+                this.setPriorityClock(priority);
+                System.out.println("set priority to " + priority);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input");
+            }
+        });
 
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
@@ -126,6 +156,8 @@ class GUI extends UIThread {
         p.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         p.setPreferredSize(new Dimension(500, 100));
         p.add(this.timeLabel);
+        p.add(this.button);
+        p.add(this.textField);
         this.frame.add(p);
     }
 
