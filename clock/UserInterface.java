@@ -126,6 +126,12 @@ class GUI extends UIThread {
         this.button = new JButton("Set!");
         this.button.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
         this.button.setForeground(Color.RED);
+        this.button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        this.textField = new JTextField("input priority");
+        this.textField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        this.textField.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
+        this.textField.setMinimumSize(new java.awt.Dimension(100, 30));
 
         JPanel p = new JPanel();
         p.setLayout(new GridBagLayout());
