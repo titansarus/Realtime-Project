@@ -134,13 +134,11 @@ class GUI extends UIThread {
         this.timeLabel.setForeground(Color.RED);
 
         this.button = new JButton("Set!");
-        this.button.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
         this.button.setForeground(Color.RED);
         this.button.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         this.textField = new JTextField("input priority");
         this.textField.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        this.textField.setFont(new Font("DIGITALDREAMFAT", Font.PLAIN, 15));
         this.textField.setMinimumSize(new java.awt.Dimension(100, 30));
 
         this.button.addActionListener(l -> {
